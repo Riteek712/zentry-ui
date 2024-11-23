@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import Button from './Button'
 import { TiLocationArrow } from 'react-icons/ti'
 import { useGSAP } from '@gsap/react'
@@ -10,11 +10,12 @@ import gsap from 'gsap'
 const Hero = () => {
     const [currentIndex, setCurrentIndex] = useState(1)
     const [hasClicked, setHasClicked] = useState(false)
-    const [isLoading, setIsLoading] = useState(true)
+    // const [isLoading, setIsLoading] = useState(true)
     const [loadedVideos, setIsLoadedVideos] = useState(0)
+    console.log(loadedVideos)
 
     const totalvideos = 4;
-    const nextVideoRef = useRef(null);
+    const nextVideoRef = useRef<HTMLVideoElement>(null);
 
     const handleVideoLoad = () =>{
         setIsLoadedVideos((prev)=> prev +1)
@@ -36,7 +37,14 @@ const Hero = () => {
               height: "100%",
               duration: 1,
               ease: "power1.inOut",
-              onStart: () => nextVideoRef.current.play(),
+              onStart: () => {
+                const video = nextVideoRef.current;
+                if (video) {
+                  video.play().catch((err:Error) => {
+                    console.error("Video playback failed:", err);
+                  });
+                }
+              },
             });
             gsap.from("#current-video", {
               transformOrigin: "center center",
