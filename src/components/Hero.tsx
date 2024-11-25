@@ -32,6 +32,7 @@ const Hero: React.FC = () => {
     setHasClicked(true);
     setCurrentIndex((prevIndex) => (prevIndex % totalVideos) + 1);
   };
+  const [fullScreenVideoIndex, setFullScreenVideoIndex] = useState(currentIndex);
 
   useGSAP(
     () => {
@@ -42,7 +43,7 @@ const Hero: React.FC = () => {
           scale: 1,
           width: "100%",
           height: "100%",
-          duration: 1,
+          duration: 2,
           ease: "power1.inOut",
           onStart: () => {
             const video = nextVdRef.current;
@@ -51,6 +52,10 @@ const Hero: React.FC = () => {
                 console.error("Video play failed:", error);
               });
             }
+          },
+          onComplete: () => {
+            // Change the full-screen video source after animation completes
+            setFullScreenVideoIndex(currentIndex);
           },
         });
         gsap.from("#current-video", {
@@ -134,7 +139,7 @@ const Hero: React.FC = () => {
           />
           <video
             src={getVideoSrc(
-              currentIndex === totalVideos - 1 ? 1 : currentIndex
+                fullScreenVideoIndex === totalVideos - 1 ? 1 : fullScreenVideoIndex
             )}
             autoPlay
             loop
